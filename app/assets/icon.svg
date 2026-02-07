@@ -1,0 +1,31 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="224" fill="url(#gradient)"/>
+  
+  <!-- Cannabis leaf stylized -->
+  <g transform="translate(512, 512)">
+    <!-- Center circle -->
+    <circle r="80" fill="white" fill-opacity="0.9"/>
+    
+    <!-- Leaf petals -->
+    <ellipse cx="0" cy="-200" rx="60" ry="160" fill="white" fill-opacity="0.85"/>
+    <ellipse cx="0" cy="-200" rx="60" ry="160" fill="white" fill-opacity="0.85" transform="rotate(45)"/>
+    <ellipse cx="0" cy="-200" rx="60" ry="160" fill="white" fill-opacity="0.85" transform="rotate(90)"/>
+    <ellipse cx="0" cy="-200" rx="60" ry="160" fill="white" fill-opacity="0.85" transform="rotate(135)"/>
+    <ellipse cx="0" cy="-200" rx="60" ry="160" fill="white" fill-opacity="0.85" transform="rotate(180)"/>
+    <ellipse cx="0" cy="-200" rx="60" ry="160" fill="white" fill-opacity="0.85" transform="rotate(225)"/>
+    <ellipse cx="0" cy="-200" rx="60" ry="160" fill="white" fill-opacity="0.85" transform="rotate(270)"/>
+    <ellipse cx="0" cy="-200" rx="60" ry="160" fill="white" fill-opacity="0.85" transform="rotate(315)"/>
+    
+    <!-- AI sparkle -->
+    <circle cx="120" cy="-120" r="40" fill="#A855F7"/>
+    <path d="M120 -145 L120 -95 M95 -120 L145 -120" stroke="white" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#166534"/>
+      <stop offset="100%" stop-color="#22C55E"/>
+    </linearGradient>
+  </defs>
+</svg>
