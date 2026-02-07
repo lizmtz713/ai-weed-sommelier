@@ -44,7 +44,7 @@ export function LoginScreen({ navigation }: any) {
         style={styles.content}
       >
         <Animated.View style={[styles.header, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-          <Text style={styles.logo}>PUFF</Text>
+          <Text style={styles.logo}>Sommelier</Text>
           <Text style={styles.emoji}>🌿💨</Text>
           <Text style={styles.tagline}>Your Cannabis Companion</Text>
         </Animated.View>

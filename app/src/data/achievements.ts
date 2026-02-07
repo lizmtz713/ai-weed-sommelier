@@ -1,4 +1,4 @@
-// PUFF Achievements System
+// AI Weed Sommelier Achievements System
 // Gamification for cannabis journey
 
 export interface Achievement {
@@ -40,8 +40,8 @@ export interface UserAchievements {
 export const ACHIEVEMENTS: Achievement[] = [
   // Getting Started
   {
-    id: 'first-puff',
-    name: 'First Puff',
+    id: 'first-session',
+    name: 'First Session',
     description: 'Log your first session',
     emoji: '🌱',
     category: 'getting-started',

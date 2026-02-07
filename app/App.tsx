@@ -119,7 +119,7 @@ function AppNavigator() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <Text style={styles.loadingLogo}>PUFF</Text>
+        <Text style={styles.loadingLogo}>Sommelier</Text>
         <Text style={styles.loadingEmoji}>🌿💨</Text>
         <ActivityIndicator size="large" color="#FFFFFF" style={{ marginTop: 20 }} />
       </View>

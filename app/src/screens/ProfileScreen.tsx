@@ -124,7 +124,7 @@ export function ProfileScreen() {
           
           <TouchableOpacity style={styles.actionRow}>
             <Ionicons name="information-circle-outline" size={22} color="#059669" />
-            <Text style={styles.actionText}>About PUFF</Text>
+            <Text style={styles.actionText}>About AI Weed Sommelier</Text>
             <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
           </TouchableOpacity>
         </View>
@@ -135,7 +135,7 @@ export function ProfileScreen() {
           <Text style={styles.logoutText}>Sign Out</Text>
         </TouchableOpacity>
 
-        <Text style={styles.version}>PUFF v1.0.0</Text>
+        <Text style={styles.version}>AI Weed Sommelier v1.0.0</Text>
         <View style={{ height: 40 }} />
       </ScrollView>
     </SafeAreaView>
