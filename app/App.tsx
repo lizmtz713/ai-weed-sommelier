@@ -8,6 +8,7 @@ import { StatusBar } from 'expo-status-bar';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 
 import { AuthProvider, useAuth } from './src/contexts/AuthContext';
+import { SubscriptionProvider } from './src/contexts/SubscriptionContext';
 
 // Auth Screens
 import { LoginScreen } from './src/screens/auth/LoginScreen';
@@ -22,6 +23,7 @@ import { ProfileScreen } from './src/screens/ProfileScreen';
 import { MedicalScreen } from './src/screens/MedicalScreen';
 import { RecommendScreen } from './src/screens/RecommendScreen';
 import { ToleranceBreakScreen } from './src/screens/ToleranceBreakScreen';
+import { PaywallScreen } from './src/screens/PaywallScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -109,6 +111,11 @@ function MainStack() {
         component={ToleranceBreakScreen}
         options={{ presentation: 'modal' }}
       />
+      <Stack.Screen 
+        name="Paywall" 
+        component={PaywallScreen}
+        options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
+      />
     </Stack.Navigator>
   );
 }
@@ -133,10 +140,12 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
-        <NavigationContainer>
-          <StatusBar style="auto" />
-          <AppNavigator />
-        </NavigationContainer>
+        <SubscriptionProvider>
+          <NavigationContainer>
+            <StatusBar style="auto" />
+            <AppNavigator />
+          </NavigationContainer>
+        </SubscriptionProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );
