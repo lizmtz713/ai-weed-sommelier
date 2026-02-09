@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { 
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, TextInput
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { db } from '../config/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
+import { CannabisAI, setAPIKey, hasAPIKey } from '../services/aiService';
 
 export function ProfileScreen() {
   const { user, logout } = useAuth();
@@ -16,10 +18,51 @@ export function ProfileScreen() {
     favoriteStrains: 0,
     avgRating: 0,
   });
+  
+  // AI Settings
+  const [showAISettings, setShowAISettings] = useState(false);
+  const [openaiKey, setOpenaiKey] = useState('');
+  const [anthropicKey, setAnthropicKey] = useState('');
+  const [aiConfigured, setAiConfigured] = useState(hasAPIKey());
 
   useEffect(() => {
     fetchStats();
+    loadApiKeys();
   }, [user]);
+  
+  const loadApiKeys = async () => {
+    try {
+      const storedOpenai = await AsyncStorage.getItem('@weed_openai_key');
+      const storedAnthropic = await AsyncStorage.getItem('@weed_anthropic_key');
+      if (storedOpenai) {
+        setOpenaiKey(storedOpenai);
+        setAPIKey('openai', storedOpenai);
+      }
+      if (storedAnthropic) {
+        setAnthropicKey(storedAnthropic);
+        setAPIKey('anthropic', storedAnthropic);
+      }
+      setAiConfigured(hasAPIKey());
+    } catch (e) {
+      console.error('Error loading API keys:', e);
+    }
+  };
+  
+  const saveApiKey = async (provider: 'openai' | 'anthropic', key: string) => {
+    try {
+      const storageKey = provider === 'openai' ? '@weed_openai_key' : '@weed_anthropic_key';
+      if (key.trim()) {
+        await AsyncStorage.setItem(storageKey, key.trim());
+        setAPIKey(provider, key.trim());
+      } else {
+        await AsyncStorage.removeItem(storageKey);
+      }
+      setAiConfigured(hasAPIKey());
+      Alert.alert('Saved', `${provider === 'openai' ? 'OpenAI' : 'Anthropic'} key ${key.trim() ? 'saved' : 'removed'}.`);
+    } catch (e) {
+      Alert.alert('Error', 'Failed to save API key.');
+    }
+  };
 
   const fetchStats = async () => {
     if (!user) return;
@@ -101,6 +144,63 @@ export function ProfileScreen() {
           </View>
         </View>
 
+        {/* AI Settings */}
+        <Text style={styles.sectionTitle}>AI Budtender</Text>
+        <View style={styles.actions}>
+          <TouchableOpacity 
+            style={styles.actionRow}
+            onPress={() => setShowAISettings(!showAISettings)}
+          >
+            <View style={[styles.aiDot, { backgroundColor: aiConfigured ? '#10B981' : '#EF4444' }]} />
+            <Text style={styles.actionText}>
+              {aiConfigured ? 'AI Enabled' : 'Configure AI Keys'}
+            </Text>
+            <Ionicons name={showAISettings ? 'chevron-up' : 'chevron-down'} size={20} color="#9CA3AF" />
+          </TouchableOpacity>
+          
+          {showAISettings && (
+            <View style={styles.aiSettings}>
+              <View style={styles.apiKeyRow}>
+                <TextInput
+                  style={styles.apiKeyInput}
+                  value={openaiKey}
+                  onChangeText={setOpenaiKey}
+                  placeholder="OpenAI API Key (sk-...)"
+                  placeholderTextColor="#9CA3AF"
+                  secureTextEntry
+                  autoCapitalize="none"
+                />
+                <TouchableOpacity 
+                  style={styles.saveKeyButton}
+                  onPress={() => saveApiKey('openai', openaiKey)}
+                >
+                  <Text style={styles.saveKeyText}>Save</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.apiKeyRow}>
+                <TextInput
+                  style={styles.apiKeyInput}
+                  value={anthropicKey}
+                  onChangeText={setAnthropicKey}
+                  placeholder="Anthropic API Key (sk-ant-...)"
+                  placeholderTextColor="#9CA3AF"
+                  secureTextEntry
+                  autoCapitalize="none"
+                />
+                <TouchableOpacity 
+                  style={styles.saveKeyButton}
+                  onPress={() => saveApiKey('anthropic', anthropicKey)}
+                >
+                  <Text style={styles.saveKeyText}>Save</Text>
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.apiKeyNote}>
+                Keys are stored securely on your device. Get keys from openai.com or anthropic.com.
+              </Text>
+            </View>
+          )}
+        </View>
+
         {/* Actions */}
         <Text style={styles.sectionTitle}>Settings</Text>
         <View style={styles.actions}>
@@ -119,12 +219,6 @@ export function ProfileScreen() {
           <TouchableOpacity style={styles.actionRow}>
             <Ionicons name="help-circle-outline" size={22} color="#059669" />
             <Text style={styles.actionText}>Help & Support</Text>
-            <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.actionRow}>
-            <Ionicons name="information-circle-outline" size={22} color="#059669" />
-            <Text style={styles.actionText}>About AI Weed Sommelier</Text>
             <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
           </TouchableOpacity>
         </View>
@@ -211,4 +305,26 @@ const styles = StyleSheet.create({
   },
   logoutText: { fontSize: 16, fontWeight: '600', color: '#EF4444', marginLeft: 8 },
   version: { textAlign: 'center', color: '#9CA3AF', marginTop: 24, fontSize: 13 },
+  // AI Settings
+  aiDot: { width: 10, height: 10, borderRadius: 5, marginRight: 8 },
+  aiSettings: { padding: 16, borderTopWidth: 1, borderTopColor: '#F3F4F6' },
+  apiKeyRow: { flexDirection: 'row', marginBottom: 12, gap: 8 },
+  apiKeyInput: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 14,
+    color: '#1F2937',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  saveKeyButton: {
+    backgroundColor: '#059669',
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    justifyContent: 'center',
+  },
+  saveKeyText: { color: '#FFF', fontWeight: '600', fontSize: 14 },
+  apiKeyNote: { fontSize: 12, color: '#6B7280', lineHeight: 18 },
 });
